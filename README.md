@@ -1,6 +1,23 @@
-# **Evaluating differences in bacterial association networks from rainforest and converted pasturelands in the Colombian Amazon region**
+<h1 align="center">
+    RainforestBacNets
+</h1>
 
-## **Table of contents:**
+<p align="center">
+  <img src="images/logo/rainforestbactnets-logo.svg" width="300" alt="RainforestBacNets-logo"/>
+  <br>
+</p>
+
+<p align="center">
+    <a href="https://github.com/sayalaruano/RainforestBacNets/blob/main/LICENSE.md">
+        <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg" />
+    </a>
+</p>
+
+<p align="center">
+   Evaluating differences in bacterial association networks from rainforest and converted pasturelands in the Colombian Amazon region
+</p>
+
+## Table of contents:
 
 - [About the project](#about-the-webapp)
 - [Dataset](#dataset)
@@ -9,26 +26,89 @@
 - [Further details](#details)
 - [Contact](#contact)
 
-## **About the project**
+## About the project
 
-Microbial association networks (MANs) provide insights into potential ecological interactions among microbes, including mutualism, competition, and more. Furthermore, these networks can reveal communities that share ecological functions or keystone taxa playing crucial roles in the system. In MANs, nodes correspond to Operational Taxonomical Units (OTUs) at a given taxonomic rank, and edges between nodes denote significant co-presence (positive relationships) or mutual exclusion (negative relationships) patterns in OTU abundances across samples. Multiple association metrics are available for inferring MANs, mainly founded on correlation, proportionality, and conditional dependence approaches.
+The **Earth’s microbiome** - all microbial communities, their structural components, and metabolic byproducts -
+constitutes the **largest portion of biodiversity** on our planet. Due to their widespread presence, microbes
+profoundly impact the biosphere, collectively **regulating the global biogeochemical cycles**, soil fertility, and
+other processes.  In particular, it is crucial to study the **soil microbial diversity** of **tropical ecosystems** facing threats due to extensive **deforestation** for crop cultivation or pasture expansion. While standard **metagenomic analyses** identify taxonomic composition, they often **overlook ecological interactions** within microbial communities.
 
-In this project, the CCLasso (correlation-based) and SPRING (conditional dependence-based) methods were used to explore differences in microbiomes found in the rainforest and converted pasturelands of the northwest Colombian Amazon region.
+**RainforestBacNets** uses **Microbial Association Networks (MANs)** to map these interactions—such as mutualism and competition—between Operational Taxonomical Units (OTUs). We compared two inference methods, **CCLasso** (correlation-based) and **SPRING** (conditional dependence-based), using the [NetCoMi](https://github.com/stefpeschel/NetCoMi) framework to quantify how land-use change reshapes microbial community structure.
 
-The [NetCoMi R package](https://github.com/stefpeschel/NetCoMi) v1.1 was the central framework to perform the network inference, analysis, visualization, and comparison. It provides a computational workflow that involves calculating associations among OTUs using a specified metric, applying sparsification if necessary, and converting these associations into dissimilarities and subsequently into similarities, resulting in the adjacency matrix for the inferred networks.
+**Microbial association networks (MANs)** provide insights into **potential interactions among microbes**, including mutualism, competition, and more. Furthermore, these networks can **reveal communities** that share ecological functions or **keystone taxa** playing crucial roles in the system. In MANs, nodes correspond to **Operational Taxonomical Units (OTUs)** at a given taxonomic rank, and **edges between nodes denote significant co-presence (positive relationships) or mutual exclusion (negative relationships) patterns** in OTU abundances across samples.
 
-## **Dataset**
-The raw sequencing data used for this project is available at the [PRJEB44163](https://www.ebi.ac.uk/ena/browser/view/PRJEB44163) project from the European Nucleotide Archive (ENA) database. This research collected 52 soil samples from the Colombian Amazon region: 36 from rainforest areas and 16 from converted pasturelands. The rainforest samples were the reference with minimal intervention, while the pastureland represented the land use systems.
+The figure below illustrates the workflow to infer MANs from meta-omics datasets.
 
-[MGnify](https://www.ebi.ac.uk/metagenomics) is a platform that automates the analysis of metagenomics datasets from ENA and other databases. The abundance table and taxonomic profiles to infer the MANs in this project were obtained from the [MGYS00005779](https://www.ebi.ac.uk/metagenomics/studies/MGYS00005779) study, which applied the MGnify's pipeline v5. The first step was downloading the data and metadata using the MGnifyR package v0.1, enabling the utilization of the MGnify API in R scripts. Then, the data was preprocessed and manipulated using the Phyloseq v1.44 and Microbiome v1.22 R packages. The dataset was filtered to retrieve only bacterial OTUs, excluding taxa from other life kingdoms. In addition, the data was aggregated at the family taxonomic level, obtaining 200 OTUs.
+<p align="center">
+  <img src="./images/microb_asso_nets.png" width="800" alt="MANs-inference"/>
+  <br>
+  <em>Figure 1. Workflow to infer microbial association networks (MANs) from meta-omics datasets.</em>
+</p>
 
-## **Structure of the repository**
+In this project, the **CCLasso** (correlation-based) and **SPRING** (conditional dependence-based) methods were used to explore **differences in microbiomes found in the rainforest and converted pasturelands** of the northwest Colombian Amazon region. The [NetCoMi R package][netcomi] v1.1 was the main framework to perform the network inference, analysis, visualization, and comparison. 
+
+## Dataset
+
+The raw sequencing data used for this project is available at the [PRJEB44163][metag-data] project from the **European Nucleotide Archive (ENA) database**. This research collected **52 soil samples** from the Colombian Amazon region: **36 from rainforest** areas and **16 from converted pasturelands**. The rainforest samples were the reference with minimal intervention, while the pastureland represented the land use systems.
+
+[MGnify][mgnify] is a platform that automates the analysis of metagenomics datasets from ENA and other databases. The **abundance table and taxonomic profiles** to infer the MANs in this project were obtained from the [MGYS00005779][mgnify-study] study. 
+
+The first step was downloading the data and metadata using the **MGnifyR package** v0.1, enabling the use of the MGnify API in R scripts. Then, the data was preprocessed and manipulated using the **Phyloseq** v1.44 and **Microbiome** v1.22 R packages. The dataset was filtered to retrieve **only bacterial OTUs**, excluding taxa from other life kingdoms. In addition, the data was aggregated at the **family taxonomic level**, obtaining **200 OTUs**.
+
+## Results
+
+### 1. Comparison of inference methods
+
+The initial stage of the project involved a comparison between CCLasso and SPRING. **CCLasso** was found to have more **favorable topological features for capturing microbiome interactions**, including more efficient information flow (lower average path length) and clearer identification of degree-based hub nodes.
+
+The following table summarizes the topological features of all networks:
+
+| Metric | Forest SPRING | Forest CCLasso | Pasture SPRING | Pasture CCLasso |
+|:---:|:---:|:---:|:---:|:---:|
+| **Nodes** | 108 | 43 | 95 | 56 |
+| **Edges** | 183 | 108 | 185 | 113 |
+| **Modularity** | 0.69 | 0.46 | 0.71 | 0.43 |
+| **Avg. Path Length** | 6.02 | 3.20 | 6.96 | 2.78 |
+
+### 2. Impact of land use conversion
+
+The visual analysis and statistical comparison via non-parametric permutation testing confirmed a significant **increase in negative interactions** in **pastureland networks** compared to forest counterparts. This suggests a **shift toward antagonistic relationships**, such as increased competition and predation, following land perturbation. The figures below show the forest and pasturland networks inferred with CCLAsso and SPRING.
+
+<p align="center">
+  <img src="images/forest_family_deg.png" width="800" alt="Forest networks comparison"/>
+  <br>
+  <em>Figure 2. Forest bacterial association networks inferred with A) SPRING and B) CCLasso. Nodes represent family-level OTUs, 
+  colored by their community and sized by degree.</em>
+</p>
+
+<p align="center">
+  <img src="images/pasture_family_deg.png" width="800" alt="Pasture networks comparison"/>
+  <br>
+  <em>Figure 3. Pasture bacterial association networks inferred with A) SPRING and B) CCLasso. Nodes represent family-level OTUs, 
+  colored by their community and sized by degree. Note the increase in negative associations (blue edges).</em>
+</p>
+
+### 3. Taxonomic shifts by Phylum
+
+The land conversion resulted in these taxonomic patterns:
+
+* **Acidobacteria**: Significant decrease in pasturelands, likely due to increased soil pH and carbon.
+* **Actinobacteria**: Increase in pasturelands, potentially linked to their role in competitive ecological interactions and antibiotic production.
+
+<p align="center">
+  <img src="images/cclasso_nets_family_phyl_betw.png" width="800" alt="Networks-colored-by-phylum"/>
+  <br>
+  <em>Figure 4. A) Forest and B) Pasture networks inferred with CCLasso. Nodes represent family-level OTUs, colored by their phylum and sized by betweenness. Red edges correspond to positive associations and blue edges to negative ones.</em>
+</p>
+
+## Structure of the repository
 
 The main files and directories of this repository are:
 
 |File|Description|
 |:-:|---|
 |[Fetch_analyses_Mgnify.ipynb](Fetch_analyses_Mgnify.ipynb)|Jupyter notebook to retrieve data from MGnify using MGnifyR|
+|[RainforestBacNets_manuscript.pdf][manuscript] | Full research report including detailed methods and discussion. |
 |[Preprocessing_metag_data.R](Preprocessing_metag_data.R)|Script to preprocess the metagenomics dataset|
 |[Build_bact_assoc_nets.R](Build_bact_assoc_nets.R)|Script to infer bacterial association networks|
 |[Network_analysis_and_cond_compar.R](Network_analysis_and_cond_compar.R)|Script to analyze, visualize, and compare networks|
@@ -36,12 +116,26 @@ The main files and directories of this repository are:
 |[Compare_pred_edges_inf_methods.R](Compare_pred_edges_inf_methods.R)|Script to calculate coincidence percentage of associations among networks|
 |[Data/](Data/)|Folder with the metagenomics data stored in a phyloseq object|
 |[Results/](/Results/)|Folder with edge lists of inferred networks, figures, and txt with comparison results|
+|[images/](/images/) | Figures for the README and report. |
 
-## **Credits**
-- Developed by [Sebastián Ayala Ruano](https://sayalaruano.github.io/).  This was my capstone project of the Network Biology course from the [Master's degree in Systems Biology](https://www.maastrichtuniversity.nl/education/master/systems-biology) at [Maastricht University](https://www.maastrichtuniversity.nl/).
+## Credits
 
-## **Further details**
-More details about the biological background of the project, the interpretation of the results, and ideas for further work are available in this [pdf report](Bact_nets_Colomb_rainforest.pdf).
+- Developed by [Sebastián Ayala Ruano][my-webpage]. This was my capstone project of the Network Biology course from the [MSc in Systems Biology][sysbio] at [Maastricht University][maasuni].
 
-## **Contact**
-If you have comments or suggestions about this project, you can [open an issue](https://github.com/sayalaruano/Bact_nets_Colomb_rainforest_conv/issues/new) in this repository, or email me at sebasar1245@gamil.com.
+## Further details
+
+The [PDF Manuscript][manuscript] contains more background information on microbiome analysis, a detailed description of the methodology, and an in-depth discussion of the results.
+
+## Contact
+
+If you have comments or suggestions about this project, you can [open an issue][issues] in this repository.
+
+[netcomi]: https://github.com/stefpeschel/NetCoMi
+[metag-data]: https://www.ebi.ac.uk/ena/browser/view/PRJEB44163
+[mgnify]: https://www.ebi.ac.uk/metagenomics
+[mgnify-study]: https://www.ebi.ac.uk/metagenomics/studies/MGYS00005779
+[my-webpage]: https://sayalaruano.github.io/
+[manuscript]: RainforestBacNets_manuscript.pdf
+[sysbio]: https://www.maastrichtuniversity.nl/education/master/systems-biology
+[maasuni]: https://www.maastrichtuniversity.nl/
+[issues]: https://github.com/sayalaruano/RainforestBacNets/issues/new
