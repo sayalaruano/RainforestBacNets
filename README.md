@@ -33,8 +33,6 @@ constitutes the **largest portion of biodiversity** on our planet. Due to their 
 profoundly impact the biosphere, collectively **regulating the global biogeochemical cycles**, soil fertility, and
 other processes.  In particular, it is crucial to study the **soil microbial diversity** of **tropical ecosystems** facing threats due to extensive **deforestation** for crop cultivation or pasture expansion. While standard **metagenomic analyses** identify taxonomic composition, they often **overlook ecological interactions** within microbial communities.
 
-**RainforestBacNets** uses **Microbial Association Networks (MANs)** to map these interactions—such as mutualism and competition—between Operational Taxonomical Units (OTUs). We compared two inference methods, **CCLasso** (correlation-based) and **SPRING** (conditional dependence-based), using the [NetCoMi](https://github.com/stefpeschel/NetCoMi) framework to quantify how land-use change reshapes microbial community structure.
-
 **Microbial association networks (MANs)** provide insights into **potential interactions among microbes**, including mutualism, competition, and more. Furthermore, these networks can **reveal communities** that share ecological functions or **keystone taxa** playing crucial roles in the system. In MANs, nodes correspond to **Operational Taxonomical Units (OTUs)** at a given taxonomic rank, and **edges between nodes denote significant co-presence (positive relationships) or mutual exclusion (negative relationships) patterns** in OTU abundances across samples.
 
 The figure below illustrates the workflow to infer MANs from meta-omics datasets.
